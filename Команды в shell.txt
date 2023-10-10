@@ -1,0 +1,76 @@
+>>> from new.models import *
+>>> u1 = User.objects.create_user(username='Al')
+>>> u1
+<User: Alex>
+>>> u2 = User.objects.create_user(username='Alan')  
+>>> Author.objects.create(authorUser=u2)
+<Author: Author object (1)>
+>>> Author.objects.create(authorUser=u1) 
+<Author: Author object (2)>
+>>> Author.objects.create(authorUser=u1)
+<Author: Author object (3)>
+>>> Author.objects.create(authorUser=u2) 
+<Author: Author object (4)>
+>>> Category.objects.create(name='Home')
+<Category: Category object (1)>
+>>> Category.objects.create(name='Game') 
+<Category: Category object (2)>
+>>> Category.objects.create(name='IT')   
+<Category: Category object (3)>
+>>> Category.objects.create(name='Bad') 
+<Category: Category object (4)>
+>>> author1 = Author.objects.get(id=3) 
+>>> author1                           
+<Author: Author object (1)>
+>>> author2 = Author.objects.get(id=4) 
+>>> Post.objects.create(author=author1,categotyType='AR', title='Home', text='Home family') 
+<Post: Post object (1)>
+>>> Post.objects.create(author=author2,categotyType='AR', title='Game', text='Home game')   
+<Post: Post object (2)>
+>>> Post.objects.create(author=author2,categotyType='NW', title='IT', text='Post')        
+<Post: Post object (3)>
+>>> Post.objects.get(id=1).post.add(Category.objects.get(id=1))                   
+>>> Post.objects.get(id=2).post.add(Category.objects.get(id=2)) 
+>>> Post.objects.get(id=2).post.add(Category.objects.get(id=4)) 
+>>> Post.objects.get(id=3).post.add(Category.objects.get(id=3)) 
+>>> Comment.objects.create(commentPost=Post.objects.get(id=1), commentUser=Author.objects.get(id=3).authorUser, text='Way')
+<Comment: Comment object (1)>
+>>> Comment.objects.create(commentPost=Post.objects.get(id=2), commentUser=Author.objects.get(id=3).authorUser, text='Way afsa') 
+<Comment: Comment object (2)>
+>>> Comment.objects.create(commentPost=Post.objects.get(id=3), commentUser=Author.objects.get(id=4).authorUser, text='Way 1312a') 
+<Comment: Comment object (3)>
+>>> Comment.objects.create(commentPost=Post.objects.get(id=3), commentUser=Author.objects.get(id=4).authorUser, text='Wap')       
+<Comment: Comment object (4)>
+>>> Comment.objects.get(id=1).like()
+>>> Comment.objects.get(id=1).like()
+>>> Comment.objects.get(id=2).dislike() 
+>>> Comment.objects.get(id=2).dislike()
+>>> Comment.objects.get(id=2).dislike()
+>>> Comment.objects.get(id=2).dislike()
+>>> Comment.objects.get(id=3).like()    
+>>> Comment.objects.get(id=4).like() 
+>>> Comment.objects.get(id=4).like()
+>>> Comment.objects.get(id=4).dislike() 
+>>> Post.objects.get(id=1).dislike() 
+>>> Post.objects.get(id=1).dislike()
+>>> Post.objects.get(id=2).dislike() 
+>>> Post.objects.get(id=3).like()    
+>>> Post.objects.get(id=3).like()
+>>> a1 = Author.objects.get(id=3)
+>>> a1.update_rating()
+>>> a1.ratingAuthor
+>>> a1.ratingAuthor
+-8
+>>> a2 = Author.objects.get(id=4) 
+>>> a2.update_rating()            
+>>> a2.ratingAuthor               
+5
+>>> a1 = Author.objects.order_by('-ratingAuthor')[:1].values('authorUser', 'ratingAuthor')
+>>> a1
+<QuerySet [{'authorUser': 4, 'ratingAuthor': 5}]>
+>>> b1 = Post.objects.order_by('-rating')[:1].values('dataCreation', 'author', 'rating', 'title', 'text')
+>>> b1
+<QuerySet [{'dataCreation': datetime.datetime(2023, 10, 10, 5, 42, 39, 899177, tzinfo=datetime.timezone.utc), 'author': 4, 'rating': 2, 'title': 'IT', 'text': 'Post'}]>
+>>> c1 = Comment.objects.filter(commentPost=Post.objects.get(id=3)).values('dataCreation', 'commentUser', 'text', 'rating') 
+>>> c1
+<QuerySet [{'dataCreation': datetime.datetime(2023, 10, 10, 5, 44, 31, 249646, tzinfo=datetime.timezone.utc), 'commentUser': 4, 'text': 'Way 1312a', 'rating': 1}, {'dataCreation': datetime.datetime(2023, 10, 10, 5, 44, 35, 802930, tzinfo=datetime.timezone.utc), 'commentUser': 4, 'text': 'Wap', 'rating': 1}]>
